@@ -1,5 +1,13 @@
 package tools
 
+import (
+	"fmt"
+	"log"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
 type FieldError struct {
 	Field   string `json:"field"`
 	Message string `json:"message"`
@@ -19,4 +27,16 @@ func NewValidationError(field, msg string) *ValidationError {
 
 func (v *ValidationError) Error() string {
 	return "validation error"
+}
+
+func HandlerSimpleError(ctx *gin.Context, httpCode int, message string, err error) {
+	if message != "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"errors": fmt.Sprintf("%s", message)})
+	} else {
+		ctx.JSON(http.StatusBadRequest, gin.H{"errors": fmt.Sprintf("%s", err)})
+	}
+}
+
+func HandleLogError(err error, message string) {
+	log.Printf("%s: %s", message, err)
 }

@@ -40,8 +40,8 @@ func (r *authRepository) Register(form dto.RegisterDTO) (code int, err error) {
 		form.FirstName,
 		form.LastName,
 		form.HashedPassword,
-	); err != nil {
-		return http.StatusBadRequest, nil
+	).Error; err != nil {
+		return http.StatusBadRequest, err
 	}
 
 	return http.StatusCreated, nil
