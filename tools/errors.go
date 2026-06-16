@@ -3,7 +3,6 @@ package tools
 import (
 	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,9 +30,9 @@ func (v *ValidationError) Error() string {
 
 func HandlerSimpleError(ctx *gin.Context, httpCode int, message string, err error) {
 	if message != "" {
-		ctx.JSON(http.StatusBadRequest, gin.H{"errors": fmt.Sprintf("%s", message)})
+		ctx.JSON(httpCode, gin.H{"errors": fmt.Sprintf("%s", message)})
 	} else {
-		ctx.JSON(http.StatusBadRequest, gin.H{"errors": fmt.Sprintf("%s", err)})
+		ctx.JSON(httpCode, gin.H{"errors": fmt.Sprintf("%s", err)})
 	}
 }
 
