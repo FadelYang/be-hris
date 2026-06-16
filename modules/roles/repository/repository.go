@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"project-root/modules/roles/dto"
 	"project-root/modules/roles/model"
@@ -67,49 +66,58 @@ func (r roleRepository) Create(ctx context.Context, form dto.CreateRole) (httpCo
 }
 
 func (r roleRepository) GetByID(ctx context.Context, ID uuid.UUID) (data *model.Role, httpCode int, err error) {
-	if err := r.db.
+	tx := r.db.
 		WithContext(ctx).
 		Raw(
 			qGetByID,
 			ID,
-		).Scan(&data).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, http.StatusNotFound, err
-		}
-		return nil, http.StatusBadRequest, err
+		).Scan(&data)
+
+	if tx.Error != nil {
+		return nil, http.StatusBadRequest, tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return nil, http.StatusNotFound, gorm.ErrRecordNotFound
 	}
 
 	return data, http.StatusOK, nil
 }
 
 func (r roleRepository) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.UpdateRole) (httpCode int, err error) {
-	if err := r.db.
+	tx := r.db.
 		WithContext(ctx).
-		Raw(
+		Exec(
 			qUpdateByID,
 			form.Name,
 			ID,
-		).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return http.StatusNotFound, err
-		}
-		return http.StatusBadRequest, err
+		)
+
+	if tx.Error != nil {
+		return http.StatusBadRequest, tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return http.StatusNotFound, gorm.ErrRecordNotFound
 	}
 
 	return http.StatusOK, nil
 }
 
 func (r roleRepository) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error) {
-	if err := r.db.
+	tx := r.db.
 		WithContext(ctx).
 		Exec(
 			qDeletebyID,
 			ID,
-		).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return http.StatusNotFound, err
-		}
-		return http.StatusBadRequest, err
+		)
+
+	if tx.Error != nil {
+		return http.StatusBadRequest, tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return http.StatusNotFound, gorm.ErrRecordNotFound
 	}
 
 	return http.StatusOK, nil

@@ -79,9 +79,8 @@ func (h *RoleHandler) GetByID(c *gin.Context) {
 
 	data, httpCode, err := h.roleUsecase.GetByID(context.Background(), parsedRoleID)
 	if err != nil {
-		errMsg := "failed to get role detail"
-		tools.HandleLogError(err, errMsg)
-		tools.HandlerSimpleError(c, httpCode, errMsg, err)
+		tools.HandleLogError(err, "")
+		tools.HandlerSimpleError(c, httpCode, "", err)
 		return
 	}
 
@@ -196,6 +195,7 @@ func (h *RoleHandler) DeleteByID(c *gin.Context) {
 		errMsg := "failed to delete role"
 		tools.HandleLogError(err, errMsg)
 		tools.HandlerSimpleError(c, httpCode, errMsg, err)
+		return
 	}
 
 	c.JSON(

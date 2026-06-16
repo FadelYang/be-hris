@@ -14,7 +14,7 @@ const (
 		LIMIT $1 OFFSET $2
 	`
 	qGetByID = `
-		SELECT * FRIM roles
+		SELECT * FROM roles
 		WHERE id = ($1)
 	`
 	qUpdateByID = `
