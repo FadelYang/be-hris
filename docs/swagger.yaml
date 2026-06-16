@@ -1,5 +1,24 @@
 basePath: /api/v1
 definitions:
+  common.BaseResponse-any:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  common.BaseResponse-array_model_Role:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/model.Role'
+        type: array
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   common.BaseResponse-dto_ExampleDTO:
     properties:
       data:
@@ -27,6 +46,15 @@ definitions:
       status:
         type: integer
     type: object
+  common.BaseResponse-model_Role:
+    properties:
+      data:
+        $ref: '#/definitions/model.Role'
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
   dto.CreateExample:
     properties:
       name:
@@ -34,6 +62,11 @@ definitions:
         type: string
     required:
     - name
+    type: object
+  dto.CreateRole:
+    properties:
+      name:
+        type: string
     type: object
   dto.CreateUser:
     properties:
@@ -81,6 +114,11 @@ definitions:
       refresh_token:
         type: string
     type: object
+  dto.UpdateRole:
+    properties:
+      name:
+        type: string
+    type: object
   dto.UpdateUser:
     properties:
       email:
@@ -120,6 +158,13 @@ definitions:
         type: string
       username:
         example: budidoremi123
+        type: string
+    type: object
+  model.Role:
+    properties:
+      id:
+        type: string
+      name:
         type: string
     type: object
 info:
@@ -272,6 +317,109 @@ paths:
       summary: Get Example With Auth
       tags:
       - examples
+  /roles:
+    get:
+      consumes:
+      - application/json
+      description: Get all roles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.BaseResponse-array_model_Role'
+      summary: Get Roles
+      tags:
+      - roles
+    post:
+      consumes:
+      - application/json
+      description: Create a role
+      parameters:
+      - description: request body for create a role [RAW]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateRole'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/common.BaseResponse-any'
+      summary: Create Role
+      tags:
+      - roles
+  /roles/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete role by its id
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.BaseResponse-any'
+      summary: Delete Role By ID
+      tags:
+      - roles
+    get:
+      consumes:
+      - application/json
+      description: Get role detail by id
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.BaseResponse-model_Role'
+      summary: Get Role Detail By ID
+      tags:
+      - roles
+    put:
+      consumes:
+      - application/json
+      description: Update a role
+      parameters:
+      - description: Role ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: request body for update a role [RAW]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateRole'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/common.BaseResponse-any'
+      summary: Update Role
+      tags:
+      - roles
   /users:
     get:
       consumes:
