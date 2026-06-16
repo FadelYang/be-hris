@@ -253,6 +253,22 @@ const docTemplate = `{
                     "roles"
                 ],
                 "summary": "Get Roles",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -634,6 +650,9 @@ const docTemplate = `{
                 "message": {
                     "type": "string"
                 },
+                "pagination": {
+                    "$ref": "#/definitions/common.Pagination"
+                },
                 "status": {
                     "type": "integer"
                 }
@@ -651,6 +670,9 @@ const docTemplate = `{
                 "message": {
                     "type": "string"
                 },
+                "pagination": {
+                    "$ref": "#/definitions/common.Pagination"
+                },
                 "status": {
                     "type": "integer"
                 }
@@ -664,6 +686,9 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                },
+                "pagination": {
+                    "$ref": "#/definitions/common.Pagination"
                 },
                 "status": {
                     "type": "integer"
@@ -679,6 +704,9 @@ const docTemplate = `{
                 "message": {
                     "type": "string"
                 },
+                "pagination": {
+                    "$ref": "#/definitions/common.Pagination"
+                },
                 "status": {
                     "type": "integer"
                 }
@@ -692,6 +720,9 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                },
+                "pagination": {
+                    "$ref": "#/definitions/common.Pagination"
                 },
                 "status": {
                     "type": "integer"
@@ -707,7 +738,30 @@ const docTemplate = `{
                 "message": {
                     "type": "string"
                 },
+                "pagination": {
+                    "$ref": "#/definitions/common.Pagination"
+                },
                 "status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "common.Pagination": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "total_data": {
+                    "type": "integer"
+                },
+                "total_page": {
                     "type": "integer"
                 }
             }
