@@ -29,7 +29,7 @@ func NewPermissionHandler(permissionUsecase usecase.PermissionUsecase) *Permissi
 // @Description 	Get all permissions
 // @Accept 				json
 // @Produce 			json
-// @Success				200 {object} common.BaseResponse[[]model.permission]
+// @Success				200 {object} common.BaseResponse[[]model.Permission]
 // @Param         page query int false "Page number" default(1)
 // @Param         limit query int false "Items per page" default(10)
 // @Router				/permissions [get]
@@ -64,7 +64,7 @@ func (h *PermissionHandler) GetAll(c *gin.Context) {
 // @Description 	Get permission detail by id
 // @Accept 				json
 // @Produce 			json
-// @Success				200 {object} common.BaseResponse[model.permission]
+// @Success				200 {object} common.BaseResponse[model.Permission]
 // @Param         id path string true "permission ID"
 // @Router				/permissions/{id} [get]
 func (h *PermissionHandler) GetByID(c *gin.Context) {
