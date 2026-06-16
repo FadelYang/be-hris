@@ -14,12 +14,12 @@ import (
 	"github.com/google/uuid"
 )
 
-type roleHandler struct {
+type RoleHandler struct {
 	roleUsecase usecase.RoleUsecase
 }
 
-func NewRoleHandler(role usecase.RoleUsecase) *roleHandler {
-	return &roleHandler{
+func NewRoleHandler(role usecase.RoleUsecase) *RoleHandler {
+	return &RoleHandler{
 		roleUsecase: role,
 	}
 }
@@ -31,7 +31,7 @@ func NewRoleHandler(role usecase.RoleUsecase) *roleHandler {
 // @Produce 			json
 // @Success				200 {object} common.BaseResponse[[]model.Role]
 // @Router				/roles [get]
-func (h *roleHandler) GetAll(c *gin.Context) {
+func (h *RoleHandler) GetAll(c *gin.Context) {
 	data, httpCode, err := h.roleUsecase.GetAll(c.Request.Context())
 	if err != nil {
 		errMsg := "failed to get roles data"
@@ -58,7 +58,7 @@ func (h *roleHandler) GetAll(c *gin.Context) {
 // @Success				200 {object} common.BaseResponse[model.Role]
 // @Param         id path string true "Role ID"
 // @Router				/roles/{id} [get]
-func (h *roleHandler) GetByID(c *gin.Context) {
+func (h *RoleHandler) GetByID(c *gin.Context) {
 	roleID := c.Param("id")
 	parsedRoleID, err := uuid.Parse(roleID)
 	if err != nil {
@@ -94,7 +94,7 @@ func (h *roleHandler) GetByID(c *gin.Context) {
 // @Success				201 {object} common.BaseResponse[any]
 // @Router				/roles [post]
 // @Param					request body dto.CreateRole true "request body for create a role [RAW]"
-func (h *roleHandler) Create(c *gin.Context) {
+func (h *RoleHandler) Create(c *gin.Context) {
 	var form dto.CreateRole
 	if err := c.ShouldBindBodyWithJSON(&form); err != nil {
 		errMsg := "failed to create role"
@@ -129,7 +129,7 @@ func (h *roleHandler) Create(c *gin.Context) {
 // @Router				/roles/{id} [put]
 // @Param         id path string true "Role ID"
 // @Param					request body dto.UpdateRole true "request body for update a role [RAW]"
-func (h *roleHandler) UpdateByID(c *gin.Context) {
+func (h *RoleHandler) UpdateByID(c *gin.Context) {
 	var form dto.UpdateRole
 	if err := c.ShouldBindBodyWithJSON(&form); err != nil {
 		errMsg := "failed to update role"
@@ -172,7 +172,7 @@ func (h *roleHandler) UpdateByID(c *gin.Context) {
 // @Success				200 {object} common.BaseResponse[any]
 // @Param         id path string true "Role ID"
 // @Router				/roles/{id} [delete]
-func (h *roleHandler) DeleteByID(c *gin.Context) {
+func (h *RoleHandler) DeleteByID(c *gin.Context) {
 	roleID := c.Param("id")
 	parsedRoleID, err := uuid.Parse(roleID)
 	if err != nil {

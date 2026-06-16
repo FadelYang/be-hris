@@ -8,6 +8,7 @@ import (
 
 	auth "project-root/modules/auth/routes"
 	ex "project-root/modules/examples/routes"
+	roles "project-root/modules/roles/routes"
 	users "project-root/modules/users/routes"
 
 	swaggerFiles "github.com/swaggo/files"
@@ -22,4 +23,5 @@ func InitRoutes(r *gin.Engine, p *providers.Providers, jwtService *services.JWTS
 	ex.RegisterRoutes(api, p.Examples, jwtService)
 	users.RegisterRoutes(api, p.Users, jwtService)
 	auth.RegisterRoutes(api, p.Auth)
+	roles.RegisterRoutes(api, p.Roles)
 }

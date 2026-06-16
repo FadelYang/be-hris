@@ -4,6 +4,7 @@ import (
 	"project-root/internal/services"
 	authProvider "project-root/modules/auth/providers"
 	exProvider "project-root/modules/examples/providers"
+	roleProvider "project-root/modules/roles/providers"
 	userProvider "project-root/modules/users/providers"
 
 	"github.com/redis/go-redis/v9"
@@ -14,6 +15,7 @@ type Providers struct {
 	Examples *exProvider.Provider
 	Users    *userProvider.Provider
 	Auth     *authProvider.Provider
+	Roles    *roleProvider.Provider
 }
 
 func Init(db *gorm.DB, redisClient *redis.Client, jwtService *services.JWTService) *Providers {
@@ -21,5 +23,6 @@ func Init(db *gorm.DB, redisClient *redis.Client, jwtService *services.JWTServic
 		Examples: exProvider.NewProvider(db),
 		Users:    userProvider.NewProvider(db),
 		Auth:     authProvider.NewProvider(db, redisClient, jwtService),
+		Roles:    roleProvider.NewProvider(db),
 	}
 }
