@@ -5,12 +5,13 @@ import (
 	"project-root/modules/roles/dto"
 	"project-root/modules/roles/model"
 	"project-root/modules/roles/repository"
+	"project-root/tools"
 
 	"github.com/google/uuid"
 )
 
 type RoleUsecase interface {
-	GetAll(ctx context.Context) (data []model.Role, httpCode int, err error)
+	GetAll(ctx context.Context, filter dto.Filter) (data []model.Role, pagination tools.Pagination, httpCode int, err error)
 	Create(ctx context.Context, form dto.CreateRole) (httpCode int, err error)
 	GetByID(ctx context.Context, ID uuid.UUID) (data *model.Role, httpCode int, err error)
 	UpdateByID(ctx context.Context, ID uuid.UUID, form dto.UpdateRole) (httpCode int, err error)
@@ -27,10 +28,13 @@ func NewRoleUsecase(roleRepository repository.RoleRepository) RoleUsecase {
 	}
 }
 
-func (u roleUsecase) GetAll(ctx context.Context) (data []model.Role, httpCode int, err error) {
-	data, httpCode, err = u.roleRepository.GetAll(ctx)
+func (u roleUsecase) GetAll(ctx context.Context, filter dto.Filter) (data []model.Role, pagination tools.Pagination, httpCode int, err error) {
+	data, total, httpCode, err := u.roleRepository.GetAll(ctx, filter)
+	filter.Pagination.TotalData = total
 
-	return data, httpCode, err
+	pagination = tools.ConstructPaginationResponse(filter.Pagination)
+
+	return data, pagination, httpCode, err
 }
 
 func (u roleUsecase) Create(ctx context.Context, form dto.CreateRole) (httpCode int, err error) {

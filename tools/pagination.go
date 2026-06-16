@@ -1,15 +1,17 @@
 package tools
 
 import (
-	"project-root/common"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Pagination struct {
-	Page  int
-	Limit int
+	Page      int `json:"page"`
+	Limit     int `json:"limit"`
+	Offset    int `json:"offset"`
+	TotalData int `json:"total_data"`
+	TotalPage int `json:"total_page"`
 }
 
 func New(page, limit int) Pagination {
@@ -31,19 +33,31 @@ func New(page, limit int) Pagination {
 	}
 }
 
-func (p Pagination) Offset() int {
+func (p Pagination) CalculateOffset() int {
 	return (p.Page - 1) * p.Limit
 }
 
-func GetPaginationQuery(c *gin.Context) common.Pagination {
-	paginationQuery := common.Pagination{
-		Page:  1,
-		Limit: 10,
+func GetPaginationQuery(c *gin.Context) Pagination {
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+
+	p := New(page, limit)
+
+	return Pagination{
+		Page:   p.Page,
+		Limit:  p.Limit,
+		Offset: p.CalculateOffset(),
 	}
+}
 
-	paginationQuery.Page, _ = strconv.Atoi(c.Query("page"))
-	paginationQuery.Limit, _ = strconv.Atoi(c.Query("limit"))
-	paginationQuery.Offset = (paginationQuery.Page - 1) * paginationQuery.Limit
+func ConstructPaginationResponse(paginate Pagination) Pagination {
+	pagination := Pagination{
+		Page:      paginate.Page,
+		Limit:     paginate.Limit,
+		Offset:    paginate.Offset,
+		TotalData: paginate.TotalData,
+	}
+	pagination.TotalPage = (pagination.TotalData + pagination.Limit - 1) / pagination.Limit
 
-	return paginationQuery
+	return pagination
 }

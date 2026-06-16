@@ -30,9 +30,17 @@ func NewRoleHandler(role usecase.RoleUsecase) *RoleHandler {
 // @Accept 				json
 // @Produce 			json
 // @Success				200 {object} common.BaseResponse[[]model.Role]
+// @Param         page query int false "Page number" default(1)
+// @Param         limit query int false "Items per page" default(10)
 // @Router				/roles [get]
 func (h *RoleHandler) GetAll(c *gin.Context) {
-	data, httpCode, err := h.roleUsecase.GetAll(c.Request.Context())
+	paginate := tools.GetPaginationQuery(c)
+
+	filter := dto.Filter{
+		Pagination: paginate,
+	}
+
+	data, pagination, httpCode, err := h.roleUsecase.GetAll(c.Request.Context(), filter)
 	if err != nil {
 		errMsg := "failed to get roles data"
 		tools.HandleLogError(err, errMsg)
@@ -43,9 +51,10 @@ func (h *RoleHandler) GetAll(c *gin.Context) {
 	c.JSON(
 		httpCode,
 		common.BaseResponse[[]model.Role]{
-			Status:  httpCode,
-			Message: "succes get roles data",
-			Data:    data,
+			Status:     httpCode,
+			Message:    "succes get roles data",
+			Data:       data,
+			Pagination: &pagination,
 		},
 	)
 }

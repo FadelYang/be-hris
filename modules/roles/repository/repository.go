@@ -12,7 +12,7 @@ import (
 )
 
 type RoleRepository interface {
-	GetAll(ctx context.Context) (data []model.Role, httpCode int, err error)
+	GetAll(ctx context.Context, filter dto.Filter) (data []model.Role, totalData int, httpCode int, err error)
 	Create(ctx context.Context, form dto.CreateRole) (httpCode int, err error)
 	GetByID(ctx context.Context, ID uuid.UUID) (data *model.Role, httpCode int, err error)
 	UpdateByID(ctx context.Context, ID uuid.UUID, form dto.UpdateRole) (httpCode int, err error)
@@ -29,16 +29,28 @@ func NewRoleRepository(db *gorm.DB) RoleRepository {
 	}
 }
 
-func (r roleRepository) GetAll(ctx context.Context) (data []model.Role, httpCode int, err error) {
+func (r roleRepository) GetAll(ctx context.Context, filter dto.Filter) (data []model.Role, totalData int, httpCode int, err error) {
 	if err := r.db.
 		WithContext(ctx).
-		Raw(qGet).
+		Raw(
+			qGet,
+			filter.Pagination.Limit,
+			filter.Pagination.Offset,
+		).
 		Scan(&data).
 		Error; err != nil {
-		return nil, http.StatusBadRequest, err
+		return nil, totalData, http.StatusBadRequest, err
 	}
 
-	return data, http.StatusOK, nil
+	if err := r.db.
+		WithContext(ctx).
+		Raw(qCount).
+		Scan(&totalData).
+		Error; err != nil {
+		return nil, totalData, http.StatusBadRequest, err
+	}
+
+	return data, totalData, http.StatusOK, nil
 }
 
 func (r roleRepository) Create(ctx context.Context, form dto.CreateRole) (httpCode int, err error) {
