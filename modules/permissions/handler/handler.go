@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"project-root/common"
 	"project-root/modules/permissions/dto"
@@ -42,9 +41,8 @@ func (h *PermissionHandler) GetAll(c *gin.Context) {
 
 	data, pagination, httpCode, err := h.permissionUsecase.GetAll(c.Request.Context(), filter)
 	if err != nil {
-		errMsg := "failed to get permissions data"
-		tools.HandleLogError(err, errMsg)
-		tools.HandlerSimpleError(c, httpCode, errMsg, err)
+		tools.HandleLogError(err, "")
+		tools.HandlerSimpleError(c, httpCode, "", err)
 		return
 	}
 
@@ -71,9 +69,8 @@ func (h *PermissionHandler) GetByID(c *gin.Context) {
 	permissionID := c.Param("id")
 	parsedpermissionID, err := uuid.Parse(permissionID)
 	if err != nil {
-		errMsg := fmt.Sprintf("failed to parsed %s as permissionID", permissionID)
-		tools.HandleLogError(err, errMsg)
-		tools.HandlerSimpleError(c, http.StatusBadRequest, errMsg, err)
+		tools.HandleLogError(err, "")
+		tools.HandlerSimpleError(c, http.StatusBadRequest, "", err)
 		return
 	}
 
@@ -105,16 +102,14 @@ func (h *PermissionHandler) GetByID(c *gin.Context) {
 func (h *PermissionHandler) Create(c *gin.Context) {
 	var form dto.Createpermission
 	if err := c.ShouldBindBodyWithJSON(&form); err != nil {
-		errMsg := "failed to create permission"
-		tools.HandleLogError(err, errMsg)
-		tools.HandlerSimpleError(c, http.StatusBadRequest, errMsg, err)
+		tools.HandleLogError(err, "")
+		tools.HandlerSimpleError(c, http.StatusBadRequest, "", err)
 	}
 
 	httpCode, err := h.permissionUsecase.Create(c.Request.Context(), form)
 	if err != nil {
-		errMsg := "failed to create a permission"
-		tools.HandleLogError(err, errMsg)
-		tools.HandlerSimpleError(c, httpCode, errMsg, err)
+		tools.HandleLogError(err, "")
+		tools.HandlerSimpleError(c, httpCode, "", err)
 		return
 	}
 
@@ -140,25 +135,22 @@ func (h *PermissionHandler) Create(c *gin.Context) {
 func (h *PermissionHandler) UpdateByID(c *gin.Context) {
 	var form dto.Updatepermission
 	if err := c.ShouldBindBodyWithJSON(&form); err != nil {
-		errMsg := "failed to update permission"
-		tools.HandleLogError(err, errMsg)
-		tools.HandlerSimpleError(c, http.StatusBadRequest, errMsg, err)
+		tools.HandleLogError(err, "")
+		tools.HandlerSimpleError(c, http.StatusBadRequest, "", err)
 	}
 
 	permissionID := c.Param("id")
 	parsedpermissionID, err := uuid.Parse(permissionID)
 	if err != nil {
-		errMsg := fmt.Sprintf("failed to parsed %s as permissionID", permissionID)
-		tools.HandleLogError(err, errMsg)
-		tools.HandlerSimpleError(c, http.StatusBadRequest, errMsg, err)
+		tools.HandleLogError(err, "")
+		tools.HandlerSimpleError(c, http.StatusBadRequest, "", err)
 		return
 	}
 
 	httpCode, err := h.permissionUsecase.UpdateByID(c.Request.Context(), parsedpermissionID, form)
 	if err != nil {
-		errMsg := "failed to update a permission"
-		tools.HandleLogError(err, errMsg)
-		tools.HandlerSimpleError(c, httpCode, errMsg, err)
+		tools.HandleLogError(err, "")
+		tools.HandlerSimpleError(c, httpCode, "", err)
 		return
 	}
 
@@ -184,17 +176,15 @@ func (h *PermissionHandler) DeleteByID(c *gin.Context) {
 	permissionID := c.Param("id")
 	parsedpermissionID, err := uuid.Parse(permissionID)
 	if err != nil {
-		errMsg := fmt.Sprintf("failed to parsed %s as permissionID", permissionID)
-		tools.HandleLogError(err, errMsg)
-		tools.HandlerSimpleError(c, http.StatusBadRequest, errMsg, err)
+		tools.HandleLogError(err, "")
+		tools.HandlerSimpleError(c, http.StatusBadRequest, "", err)
 		return
 	}
 
 	httpCode, err := h.permissionUsecase.DeleteByID(context.Background(), parsedpermissionID)
 	if err != nil {
-		errMsg := "failed to delete permission"
-		tools.HandleLogError(err, errMsg)
-		tools.HandlerSimpleError(c, httpCode, errMsg, err)
+		tools.HandleLogError(err, "")
+		tools.HandlerSimpleError(c, httpCode, "", err)
 		return
 	}
 

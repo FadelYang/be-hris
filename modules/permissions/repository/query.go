@@ -20,9 +20,9 @@ const (
 	qUpdateByID = `
 		UPDATE permissions
 		SET
-			name = COALESCE($1, name)
+			name = COALESCE($1, name),
 			description = COALESCE($2, description)
-		WHERE id = $2
+		WHERE id = $3
 	`
 	qDeletebyID = `
 		DELETE FROM permissions
