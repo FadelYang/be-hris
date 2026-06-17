@@ -4,6 +4,7 @@ import (
 	"project-root/internal/services"
 	authProvider "project-root/modules/auth/providers"
 	exProvider "project-root/modules/examples/providers"
+	menuProvider "project-root/modules/menus/providers"
 	permissionProvider "project-root/modules/permissions/providers"
 	roleProvider "project-root/modules/roles/providers"
 	userProvider "project-root/modules/users/providers"
@@ -18,6 +19,7 @@ type Providers struct {
 	Auth        *authProvider.Provider
 	Roles       *roleProvider.Provider
 	Permissions *permissionProvider.Provider
+	Menus       *menuProvider.Provider
 }
 
 func Init(db *gorm.DB, redisClient *redis.Client, jwtService *services.JWTService) *Providers {
@@ -27,5 +29,6 @@ func Init(db *gorm.DB, redisClient *redis.Client, jwtService *services.JWTServic
 		Auth:        authProvider.NewProvider(db, redisClient, jwtService),
 		Roles:       roleProvider.NewProvider(db),
 		Permissions: permissionProvider.NewProvider(db),
+		Menus:       menuProvider.NewProvider(db),
 	}
 }

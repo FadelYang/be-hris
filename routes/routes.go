@@ -8,6 +8,7 @@ import (
 
 	auth "project-root/modules/auth/routes"
 	ex "project-root/modules/examples/routes"
+	menus "project-root/modules/menus/routes"
 	permissions "project-root/modules/permissions/routes"
 	roles "project-root/modules/roles/routes"
 	users "project-root/modules/users/routes"
@@ -26,4 +27,5 @@ func InitRoutes(r *gin.Engine, p *providers.Providers, jwtService *services.JWTS
 	auth.RegisterRoutes(api, p.Auth)
 	roles.RegisterRoutes(api, p.Roles)
 	permissions.RegisterRoutes(api, p.Permissions)
+	menus.RegisterRoutes(api, p.Menus)
 }
