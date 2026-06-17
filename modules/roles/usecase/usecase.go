@@ -16,6 +16,7 @@ type RoleUsecase interface {
 	GetByID(ctx context.Context, ID uuid.UUID) (data *model.Role, httpCode int, err error)
 	UpdateByID(ctx context.Context, ID uuid.UUID, form dto.UpdateRole) (httpCode int, err error)
 	DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error)
+	AssignMenusPermissions(ctx context.Context, roleID uuid.UUID, form dto.AssignMenusPermissions) (httpCode int, err error)
 }
 
 type roleUsecase struct {
@@ -57,6 +58,12 @@ func (u roleUsecase) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.Upda
 
 func (u roleUsecase) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error) {
 	httpCode, err = u.roleRepository.DeleteByID(ctx, ID)
+
+	return httpCode, err
+}
+
+func (u roleUsecase) AssignMenusPermissions(ctx context.Context, roleID uuid.UUID, form dto.AssignMenusPermissions) (httpCode int, err error) {
+	httpCode, err = u.roleRepository.AssignMenusPermissions(ctx, roleID, form)
 
 	return httpCode, err
 }

@@ -207,3 +207,47 @@ func (h *RoleHandler) DeleteByID(c *gin.Context) {
 		},
 	)
 }
+
+// @Tags 					roles
+// @Summary				Update Role
+// @Description 	Update a role
+// @Accept 				json
+// @Produce 			json
+// @Success				201 {object} common.BaseResponse[any]
+// @Router				/roles/{id}/menus-permissions [post]
+// @Param         id path string true "Role ID"
+// @Param					request body dto.AssignMenusPermissions true "request body for update a role [RAW]"
+func (h *RoleHandler) AssignMenusPermissions(c *gin.Context) {
+	var form dto.AssignMenusPermissions
+	if err := c.ShouldBindBodyWithJSON(&form); err != nil {
+		errMsg := ""
+		tools.HandleLogError(err, errMsg)
+		tools.HandlerSimpleError(c, http.StatusBadRequest, errMsg, err)
+	}
+
+	roleID := c.Param("id")
+	parsedRoleID, err := uuid.Parse(roleID)
+	if err != nil {
+		errMsg := fmt.Sprintf("failed to parsed %s as roleID", roleID)
+		tools.HandleLogError(err, errMsg)
+		tools.HandlerSimpleError(c, http.StatusBadRequest, errMsg, err)
+		return
+	}
+
+	httpCode, err := h.roleUsecase.AssignMenusPermissions(c.Request.Context(), parsedRoleID, form)
+	if err != nil {
+		errMsg := ""
+		tools.HandleLogError(err, errMsg)
+		tools.HandlerSimpleError(c, httpCode, errMsg, err)
+		return
+	}
+
+	c.JSON(
+		httpCode,
+		common.BaseResponse[any]{
+			Status:  httpCode,
+			Message: "successfully assign menu and permission to a role",
+			Data:    nil,
+		},
+	)
+}

@@ -2,9 +2,11 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"project-root/modules/roles/dto"
 	"project-root/modules/roles/model"
+	"strings"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -16,6 +18,7 @@ type RoleRepository interface {
 	GetByID(ctx context.Context, ID uuid.UUID) (data *model.Role, httpCode int, err error)
 	UpdateByID(ctx context.Context, ID uuid.UUID, form dto.UpdateRole) (httpCode int, err error)
 	DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error)
+	AssignMenusPermissions(ctx context.Context, roleID uuid.UUID, form dto.AssignMenusPermissions) (httpCode int, err error)
 }
 
 type roleRepository struct {
@@ -118,6 +121,78 @@ func (r roleRepository) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode 
 
 	if tx.RowsAffected == 0 {
 		return http.StatusNotFound, gorm.ErrRecordNotFound
+	}
+
+	return http.StatusOK, nil
+}
+
+func (r roleRepository) constructAssignMenusPermissionsValues(roleID uuid.UUID, data dto.AssignMenusPermissions) []string {
+	values := []string{}
+
+	for _, menuID := range data.MenuIDs {
+		for _, permissionID := range data.PermissionIDs {
+			values = append(
+				values,
+				fmt.Sprintf(
+					"('%s','%s','%s')",
+					roleID,
+					menuID,
+					permissionID,
+				),
+			)
+		}
+	}
+
+	return values
+}
+
+func (r roleRepository) AssignMenusPermissions(
+	ctx context.Context,
+	roleID uuid.UUID,
+	form dto.AssignMenusPermissions,
+) (httpCode int, err error) {
+
+	values := r.constructAssignMenusPermissionsValues(
+		roleID,
+		form,
+	)
+
+	tx := r.db.
+		WithContext(ctx).
+		Begin()
+
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		}
+	}()
+
+	if tx.Error != nil {
+		return http.StatusInternalServerError, tx.Error
+	}
+
+	if err := tx.Exec(
+		qDeleteAssignedMenusPermissions,
+		roleID,
+	).Error; err != nil {
+		tx.Rollback()
+		return http.StatusBadRequest, err
+	}
+
+	if len(values) > 0 {
+		if err := tx.Exec(
+			qAssignMenusPermissions +
+				strings.Join(values, ","),
+		).Error; err != nil {
+			tx.Rollback()
+			return http.StatusBadRequest, err
+		}
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		tx.Rollback()
+		return http.StatusInternalServerError, err
 	}
 
 	return http.StatusOK, nil

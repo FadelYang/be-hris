@@ -106,6 +106,8 @@ func (h *MenuHandler) Create(c *gin.Context) {
 		tools.HandlerSimpleError(c, http.StatusBadRequest, "", err)
 	}
 
+	form.Slug = tools.GenerateSlug(form.Name)
+
 	httpCode, err := h.menuUsecase.Create(c.Request.Context(), form)
 	if err != nil {
 		tools.HandleLogError(err, "")

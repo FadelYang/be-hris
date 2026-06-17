@@ -14,4 +14,5 @@ func RegisterRoutes(rg *gin.RouterGroup, roleProvider *providers.Provider) {
 	roleRoutes.POST("", roleProvider.RoleHandler.Create)
 	roleRoutes.PUT("/:id", roleProvider.RoleHandler.UpdateByID)
 	roleRoutes.DELETE("/:id", roleProvider.RoleHandler.DeleteByID)
+	roleRoutes.DELETE("/:id/menus-permissions", roleProvider.RoleHandler.AssignMenusPermissions)
 }

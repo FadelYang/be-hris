@@ -27,4 +27,12 @@ const (
 		DELETE FROM roles
 		WHERE id = $1
 	`
+	qAssignMenusPermissions = `
+		INSERT INTO roles_menus_permissions
+		VALUES $1
+	`
+	qDeleteAssignedMenusPermissions = `
+		DELETE from roles_menus_permissions
+		WHERE role_id = $1
+	`
 )
