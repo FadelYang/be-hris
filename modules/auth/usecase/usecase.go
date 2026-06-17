@@ -146,7 +146,6 @@ func (u *authUsecase) Login(ctx context.Context, form dto.LoginDTO) (response *d
 		UserID:    user.ID,
 		SessionID: sessionID,
 		Version:   uint(user.TokenVersion),
-		Role:      user.Role.Name,
 	}
 
 	accessToken, err := u.jwtService.GenerateAccessToken(generateTokenPayload)

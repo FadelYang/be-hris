@@ -80,8 +80,6 @@ func (s *userUsecase) Create(ctx context.Context, form dto.CreateUser) (dto.User
 
 	createdUser, err := s.userRepo.Create(ctx, userForm)
 	if err != nil {
-		fmt.Println("created user", err)
-
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgErr != nil {
 			switch pgErr.ConstraintName {
