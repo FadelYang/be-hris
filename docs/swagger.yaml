@@ -127,6 +127,8 @@ definitions:
     properties:
       name:
         type: string
+      parent_menu_id:
+        type: string
     type: object
   dto.CreateRole:
     properties:
@@ -190,6 +192,8 @@ definitions:
     properties:
       name:
         type: string
+      parent_menu_id:
+        type: string
     type: object
   dto.UpdateRole:
     properties:
@@ -249,6 +253,10 @@ definitions:
       id:
         type: string
       name:
+        type: string
+      parent_menu_id:
+        type: string
+      slug:
         type: string
     type: object
   model.Permission:

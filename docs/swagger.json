@@ -1174,6 +1174,9 @@
             "properties": {
                 "name": {
                     "type": "string"
+                },
+                "parent_menu_id": {
+                    "type": "string"
                 }
             }
         },
@@ -1268,6 +1271,9 @@
             "properties": {
                 "name": {
                     "type": "string"
+                },
+                "parent_menu_id": {
+                    "type": "string"
                 }
             }
         },
@@ -1355,6 +1361,12 @@
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "parent_menu_id": {
+                    "type": "string"
+                },
+                "slug": {
                     "type": "string"
                 }
             }

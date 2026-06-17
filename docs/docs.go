@@ -1181,6 +1181,9 @@ const docTemplate = `{
             "properties": {
                 "name": {
                     "type": "string"
+                },
+                "parent_menu_id": {
+                    "type": "string"
                 }
             }
         },
@@ -1275,6 +1278,9 @@ const docTemplate = `{
             "properties": {
                 "name": {
                     "type": "string"
+                },
+                "parent_menu_id": {
+                    "type": "string"
                 }
             }
         },
@@ -1362,6 +1368,12 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "parent_menu_id": {
+                    "type": "string"
+                },
+                "slug": {
                     "type": "string"
                 }
             }
