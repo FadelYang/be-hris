@@ -240,6 +240,178 @@ const docTemplate = `{
                 }
             }
         },
+        "/menus": {
+            "get": {
+                "description": "Get all menus",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "Get menus",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Items per page",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse-array_model_Menu"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a menu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "Create Menu",
+                "parameters": [
+                    {
+                        "description": "request body for create a menu [RAW]",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateMenu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse-any"
+                        }
+                    }
+                }
+            }
+        },
+        "/menus/{id}": {
+            "get": {
+                "description": "Get menu detail by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "Get Menu Detail By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "menu ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse-model_Menu"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a menu",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "Update Menu",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Menu ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "request body for update a menu [RAW]",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateMenu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse-any"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete menu by its id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Menus"
+                ],
+                "summary": "Delete Menu By ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "menu ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse-any"
+                        }
+                    }
+                }
+            }
+        },
         "/permissions": {
             "get": {
                 "description": "Get all permissions",
@@ -830,6 +1002,26 @@ const docTemplate = `{
                 }
             }
         },
+        "common.BaseResponse-array_model_Menu": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Menu"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pagination": {
+                    "$ref": "#/definitions/tools.Pagination"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "common.BaseResponse-array_model_Permission": {
             "type": "object",
             "properties": {
@@ -921,6 +1113,23 @@ const docTemplate = `{
                 }
             }
         },
+        "common.BaseResponse-model_Menu": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.Menu"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "pagination": {
+                    "$ref": "#/definitions/tools.Pagination"
+                },
+                "status": {
+                    "type": "integer"
+                }
+            }
+        },
         "common.BaseResponse-model_Permission": {
             "type": "object",
             "properties": {
@@ -964,6 +1173,14 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "Bakwan Jagung"
+                }
+            }
+        },
+        "dto.CreateMenu": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
                 }
             }
         },
@@ -1053,6 +1270,14 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.UpdateMenu": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.UpdateRole": {
             "type": "object",
             "properties": {
@@ -1127,6 +1352,17 @@ const docTemplate = `{
                 "username": {
                     "type": "string",
                     "example": "budidoremi123"
+                }
+            }
+        },
+        "model.Menu": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
