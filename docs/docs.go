@@ -1208,10 +1208,23 @@ const docTemplate = `{
         "dto.AssignMenusPermissions": {
             "type": "object",
             "properties": {
+<<<<<<< HEAD
                 "menu_permission": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dto.MenuPermission"
+=======
+                "menu_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "permission_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+>>>>>>> cf86e31 (docs: swag init)
                     }
                 }
             }
