@@ -756,6 +756,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/roles/{id}/menus-permissions": {
+            "post": {
+                "description": "Update a role",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "roles"
+                ],
+                "summary": "Update Role",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Role ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "request body for update a role [RAW]",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AssignMenusPermissions"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse-any"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "get all users",
@@ -1164,6 +1205,17 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.AssignMenusPermissions": {
+            "type": "object",
+            "properties": {
+                "menu_permission": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.MenuPermission"
+                    }
+                }
+            }
+        },
         "dto.CreateExample": {
             "type": "object",
             "required": [
@@ -1269,6 +1321,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.MenuPermission": {
+            "type": "object",
+            "properties": {
+                "menu_id": {
+                    "type": "string"
+                },
+                "permission_id": {
                     "type": "string"
                 }
             }
