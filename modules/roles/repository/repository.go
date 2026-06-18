@@ -31,7 +31,7 @@ func NewRoleRepository(db *gorm.DB) RoleRepository {
 	}
 }
 
-func (r roleRepository) GetAll(ctx context.Context, filter dto.Filter) (data []model.Role, totalData int, httpCode int, err error) {
+func (r *roleRepository) GetAll(ctx context.Context, filter dto.Filter) (data []model.Role, totalData int, httpCode int, err error) {
 	if err := r.db.
 		WithContext(ctx).
 		Raw(
@@ -55,7 +55,7 @@ func (r roleRepository) GetAll(ctx context.Context, filter dto.Filter) (data []m
 	return data, totalData, http.StatusOK, nil
 }
 
-func (r roleRepository) Create(ctx context.Context, form dto.CreateRole) (httpCode int, err error) {
+func (r *roleRepository) Create(ctx context.Context, form dto.CreateRole) (httpCode int, err error) {
 	if err := r.db.
 		WithContext(ctx).
 		Exec(
@@ -68,7 +68,7 @@ func (r roleRepository) Create(ctx context.Context, form dto.CreateRole) (httpCo
 	return http.StatusOK, nil
 }
 
-func (r roleRepository) GetByID(ctx context.Context, ID uuid.UUID) (data *model.Role, httpCode int, err error) {
+func (r *roleRepository) GetByID(ctx context.Context, ID uuid.UUID) (data *model.Role, httpCode int, err error) {
 	tx := r.db.
 		WithContext(ctx).
 		Raw(
@@ -87,7 +87,7 @@ func (r roleRepository) GetByID(ctx context.Context, ID uuid.UUID) (data *model.
 	return data, http.StatusOK, nil
 }
 
-func (r roleRepository) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.UpdateRole) (httpCode int, err error) {
+func (r *roleRepository) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.UpdateRole) (httpCode int, err error) {
 	tx := r.db.
 		WithContext(ctx).
 		Exec(
@@ -107,7 +107,7 @@ func (r roleRepository) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.U
 	return http.StatusOK, nil
 }
 
-func (r roleRepository) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error) {
+func (r *roleRepository) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error) {
 	tx := r.db.
 		WithContext(ctx).
 		Exec(
@@ -126,7 +126,7 @@ func (r roleRepository) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode 
 	return http.StatusOK, nil
 }
 
-func (r roleRepository) constructAssignMenusPermissionsValues(
+func (r *roleRepository) constructAssignMenusPermissionsValues(
 	roleID uuid.UUID,
 	data dto.AssignMenusPermissions,
 ) []string {
@@ -148,7 +148,7 @@ func (r roleRepository) constructAssignMenusPermissionsValues(
 	return values
 }
 
-func (r roleRepository) AssignMenusPermissions(
+func (r *roleRepository) AssignMenusPermissions(
 	ctx context.Context,
 	roleID uuid.UUID,
 	form dto.AssignMenusPermissions,

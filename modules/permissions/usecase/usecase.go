@@ -28,7 +28,7 @@ func NewPermissionUsecase(permissionRepository repository.PermissionRepository) 
 	}
 }
 
-func (u permissionUsecase) GetAll(ctx context.Context, filter dto.Filter) (data []model.Permission, pagination tools.Pagination, httpCode int, err error) {
+func (u *permissionUsecase) GetAll(ctx context.Context, filter dto.Filter) (data []model.Permission, pagination tools.Pagination, httpCode int, err error) {
 	data, total, httpCode, err := u.permissionRepository.GetAll(ctx, filter)
 	filter.Pagination.TotalData = total
 
@@ -37,25 +37,25 @@ func (u permissionUsecase) GetAll(ctx context.Context, filter dto.Filter) (data 
 	return data, pagination, httpCode, err
 }
 
-func (u permissionUsecase) Create(ctx context.Context, form dto.Createpermission) (httpCode int, err error) {
+func (u *permissionUsecase) Create(ctx context.Context, form dto.Createpermission) (httpCode int, err error) {
 	httpCode, err = u.permissionRepository.Create(ctx, form)
 
 	return httpCode, err
 }
 
-func (u permissionUsecase) GetByID(ctx context.Context, ID uuid.UUID) (data *model.Permission, httpCode int, err error) {
+func (u *permissionUsecase) GetByID(ctx context.Context, ID uuid.UUID) (data *model.Permission, httpCode int, err error) {
 	data, httpCode, err = u.permissionRepository.GetByID(ctx, ID)
 
 	return data, httpCode, err
 }
 
-func (u permissionUsecase) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.Updatepermission) (httpCode int, err error) {
+func (u *permissionUsecase) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.Updatepermission) (httpCode int, err error) {
 	httpCode, err = u.permissionRepository.UpdateByID(ctx, ID, form)
 
 	return httpCode, err
 }
 
-func (u permissionUsecase) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error) {
+func (u *permissionUsecase) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error) {
 	httpCode, err = u.permissionRepository.DeleteByID(ctx, ID)
 
 	return httpCode, err

@@ -28,7 +28,7 @@ func NewPermissionRepository(db *gorm.DB) PermissionRepository {
 	}
 }
 
-func (r permissionRepository) GetAll(ctx context.Context, filter dto.Filter) (data []model.Permission, totalData int, httpCode int, err error) {
+func (r *permissionRepository) GetAll(ctx context.Context, filter dto.Filter) (data []model.Permission, totalData int, httpCode int, err error) {
 	if err := r.db.
 		WithContext(ctx).
 		Raw(
@@ -52,7 +52,7 @@ func (r permissionRepository) GetAll(ctx context.Context, filter dto.Filter) (da
 	return data, totalData, http.StatusOK, nil
 }
 
-func (r permissionRepository) Create(ctx context.Context, form dto.Createpermission) (httpCode int, err error) {
+func (r *permissionRepository) Create(ctx context.Context, form dto.Createpermission) (httpCode int, err error) {
 	if err := r.db.
 		WithContext(ctx).
 		Exec(
@@ -66,7 +66,7 @@ func (r permissionRepository) Create(ctx context.Context, form dto.Createpermiss
 	return http.StatusOK, nil
 }
 
-func (r permissionRepository) GetByID(ctx context.Context, ID uuid.UUID) (data *model.Permission, httpCode int, err error) {
+func (r *permissionRepository) GetByID(ctx context.Context, ID uuid.UUID) (data *model.Permission, httpCode int, err error) {
 	tx := r.db.
 		WithContext(ctx).
 		Raw(
@@ -85,7 +85,7 @@ func (r permissionRepository) GetByID(ctx context.Context, ID uuid.UUID) (data *
 	return data, http.StatusOK, nil
 }
 
-func (r permissionRepository) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.Updatepermission) (httpCode int, err error) {
+func (r *permissionRepository) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.Updatepermission) (httpCode int, err error) {
 	tx := r.db.
 		WithContext(ctx).
 		Exec(
@@ -106,7 +106,7 @@ func (r permissionRepository) UpdateByID(ctx context.Context, ID uuid.UUID, form
 	return http.StatusOK, nil
 }
 
-func (r permissionRepository) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error) {
+func (r *permissionRepository) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error) {
 	tx := r.db.
 		WithContext(ctx).
 		Exec(

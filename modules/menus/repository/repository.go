@@ -28,7 +28,7 @@ func NewMenuRepository(db *gorm.DB) MenuRepository {
 	}
 }
 
-func (r menuRepository) GetAll(ctx context.Context, filter dto.Filter) (data []model.Menu, totalData int, httpCode int, err error) {
+func (r *menuRepository) GetAll(ctx context.Context, filter dto.Filter) (data []model.Menu, totalData int, httpCode int, err error) {
 	if err := r.db.
 		WithContext(ctx).
 		Raw(
@@ -52,7 +52,7 @@ func (r menuRepository) GetAll(ctx context.Context, filter dto.Filter) (data []m
 	return data, totalData, http.StatusOK, nil
 }
 
-func (r menuRepository) Create(ctx context.Context, form dto.CreateMenu) (httpCode int, err error) {
+func (r *menuRepository) Create(ctx context.Context, form dto.CreateMenu) (httpCode int, err error) {
 	if err := r.db.
 		WithContext(ctx).
 		Exec(
@@ -67,7 +67,7 @@ func (r menuRepository) Create(ctx context.Context, form dto.CreateMenu) (httpCo
 	return http.StatusOK, nil
 }
 
-func (r menuRepository) GetByID(ctx context.Context, ID uuid.UUID) (data *model.Menu, httpCode int, err error) {
+func (r *menuRepository) GetByID(ctx context.Context, ID uuid.UUID) (data *model.Menu, httpCode int, err error) {
 	tx := r.db.
 		WithContext(ctx).
 		Raw(
@@ -86,7 +86,7 @@ func (r menuRepository) GetByID(ctx context.Context, ID uuid.UUID) (data *model.
 	return data, http.StatusOK, nil
 }
 
-func (r menuRepository) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.UpdateMenu) (httpCode int, err error) {
+func (r *menuRepository) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.UpdateMenu) (httpCode int, err error) {
 	tx := r.db.
 		WithContext(ctx).
 		Exec(
@@ -108,7 +108,7 @@ func (r menuRepository) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.U
 	return http.StatusOK, nil
 }
 
-func (r menuRepository) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error) {
+func (r *menuRepository) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error) {
 	tx := r.db.
 		WithContext(ctx).
 		Exec(

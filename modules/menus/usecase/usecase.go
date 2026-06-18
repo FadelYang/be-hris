@@ -28,7 +28,7 @@ func NewMenuUsecase(menuRepository repository.MenuRepository) MenuUsecase {
 	}
 }
 
-func (u menuUsecase) GetAll(ctx context.Context, filter dto.Filter) (data []model.Menu, pagination tools.Pagination, httpCode int, err error) {
+func (u *menuUsecase) GetAll(ctx context.Context, filter dto.Filter) (data []model.Menu, pagination tools.Pagination, httpCode int, err error) {
 	data, total, httpCode, err := u.menuRepository.GetAll(ctx, filter)
 	filter.Pagination.TotalData = total
 
@@ -37,25 +37,25 @@ func (u menuUsecase) GetAll(ctx context.Context, filter dto.Filter) (data []mode
 	return data, pagination, httpCode, err
 }
 
-func (u menuUsecase) Create(ctx context.Context, form dto.CreateMenu) (httpCode int, err error) {
+func (u *menuUsecase) Create(ctx context.Context, form dto.CreateMenu) (httpCode int, err error) {
 	httpCode, err = u.menuRepository.Create(ctx, form)
 
 	return httpCode, err
 }
 
-func (u menuUsecase) GetByID(ctx context.Context, ID uuid.UUID) (data *model.Menu, httpCode int, err error) {
+func (u *menuUsecase) GetByID(ctx context.Context, ID uuid.UUID) (data *model.Menu, httpCode int, err error) {
 	data, httpCode, err = u.menuRepository.GetByID(ctx, ID)
 
 	return data, httpCode, err
 }
 
-func (u menuUsecase) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.UpdateMenu) (httpCode int, err error) {
+func (u *menuUsecase) UpdateByID(ctx context.Context, ID uuid.UUID, form dto.UpdateMenu) (httpCode int, err error) {
 	httpCode, err = u.menuRepository.UpdateByID(ctx, ID, form)
 
 	return httpCode, err
 }
 
-func (u menuUsecase) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error) {
+func (u *menuUsecase) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode int, err error) {
 	httpCode, err = u.menuRepository.DeleteByID(ctx, ID)
 
 	return httpCode, err
