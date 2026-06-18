@@ -126,21 +126,23 @@ func (r roleRepository) DeleteByID(ctx context.Context, ID uuid.UUID) (httpCode 
 	return http.StatusOK, nil
 }
 
-func (r roleRepository) constructAssignMenusPermissionsValues(roleID uuid.UUID, data dto.AssignMenusPermissions) []string {
+func (r roleRepository) constructAssignMenusPermissionsValues(
+	roleID uuid.UUID,
+	data dto.AssignMenusPermissions,
+) []string {
+
 	values := []string{}
 
-	for _, menuID := range data.MenuIDs {
-		for _, permissionID := range data.PermissionIDs {
-			values = append(
-				values,
-				fmt.Sprintf(
-					"('%s','%s','%s')",
-					roleID,
-					menuID,
-					permissionID,
-				),
-			)
-		}
+	for _, item := range data.Items {
+		values = append(
+			values,
+			fmt.Sprintf(
+				"('%s','%s','%s')",
+				roleID,
+				item.MenuID,
+				item.PermissionID,
+			),
+		)
 	}
 
 	return values

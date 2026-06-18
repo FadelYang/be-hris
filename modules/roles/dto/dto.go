@@ -14,9 +14,13 @@ type UpdateRole struct {
 	CreateRole
 }
 
+type MenuPermission struct {
+	MenuID       uuid.UUID `json:"menu_id"`
+	PermissionID uuid.UUID `json:"permission_id"`
+}
+
 type AssignMenusPermissions struct {
-	MenuIDs       []uuid.UUID `json:"menu_ids"`
-	PermissionIDs []uuid.UUID `json:"permission_ids"`
+	Items []MenuPermission `json:"menu_permission"`
 }
 
 type Filter struct {
