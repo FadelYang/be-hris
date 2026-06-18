@@ -11,6 +11,7 @@ import (
 	"project-root/tools"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type UserHandler struct {
@@ -253,36 +254,41 @@ func (c *UserHandler) GetByEmail(ctx *gin.Context) {
 // @Description 	update a role of user
 // @Accept 				json
 // @Produce 			json
-// @Success				201 {object} common.BaseResponse[dto.UserDTO]
-// @Router				/users/{uuid}/roles [put]
+// @Success				201 {object} common.BaseResponse[any]
+// @Router				/users/{uuid}/roles [POST]
 // @Param					uuid path string true "UUID"
-// @Param					request body dto.UpdateUserRole true "request body for update a role of user [RAW]"
-func (c *UserHandler) UpdateRole(ctx *gin.Context) {
-	stringUserUUID := ctx.Param("uuid")
-	parseUserUUID, err := tools.StringToUUID(stringUserUUID)
+// @Param					request body dto.AssignRole true "request body for update a role of user [RAW]"
+func (h *UserHandler) AssignRole(c *gin.Context) {
+	var form dto.AssignRole
+	if err := c.ShouldBindBodyWithJSON(&form); err != nil {
+		errMsg := ""
+		tools.HandleLogError(err, errMsg)
+		tools.HandlerSimpleError(c, http.StatusBadRequest, errMsg, err)
+	}
+
+	userID := c.Param("uuid")
+	parsedUserID, err := uuid.Parse(userID)
 	if err != nil {
-		errMsg := fmt.Sprintf("failed to update user role: %v", err)
-
-		log.Println(errMsg)
-		ctx.JSON(http.StatusBadRequest, gin.H{"errors": errMsg})
+		errMsg := fmt.Sprintf("failed to parsed %s as roleID", userID)
+		tools.HandleLogError(err, errMsg)
+		tools.HandlerSimpleError(c, http.StatusBadRequest, errMsg, err)
 		return
 	}
 
-	var updatedRole dto.UpdateUserRole
-	if err := ctx.ShouldBindBodyWithJSON(&updatedRole); err != nil {
-		errMsg := fmt.Sprintf("failed to update user role: %v", err)
-
-		log.Println(errMsg)
-		ctx.JSON(http.StatusBadRequest, gin.H{"errors": errMsg})
+	httpCode, err := h.userUsecase.AssignRole(c.Request.Context(), parsedUserID, form)
+	if err != nil {
+		errMsg := ""
+		tools.HandleLogError(err, errMsg)
+		tools.HandlerSimpleError(c, httpCode, errMsg, err)
 		return
 	}
 
-	code, err := c.userUsecase.UpdateRole(ctx.Request.Context(), parseUserUUID, updatedRole)
-	if err := ctx.ShouldBindBodyWithJSON(&updatedRole); err != nil {
-		errMsg := fmt.Sprintf("failed to update user role: %v", err)
-
-		log.Println(errMsg)
-		ctx.JSON(code, gin.H{"errors": errMsg})
-		return
-	}
+	c.JSON(
+		httpCode,
+		common.BaseResponse[any]{
+			Status:  httpCode,
+			Message: "successfully assign roles to a user",
+			Data:    nil,
+		},
+	)
 }

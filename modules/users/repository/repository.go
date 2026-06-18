@@ -2,9 +2,11 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"project-root/modules/users/dto"
 	"project-root/modules/users/model"
+	"strings"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -19,8 +21,8 @@ type UserRepository interface {
 	FindByEmail(ctx context.Context, email string) (model.User, error)
 	FindByUsername(ctx context.Context, username string) (model.User, error)
 	FindByPhonenumber(ctx context.Context, phonenumber string) (model.User, error)
-	UpdateRole(ctx context.Context, tx *gorm.DB, userID uuid.UUID, payload dto.UpdateUserRole) (int, error)
 	UpdateTokenVersionByUserID(ctx context.Context, tx *gorm.DB, userID uuid.UUID) (int, error)
+	AssignRole(ctx context.Context, userID uuid.UUID, form dto.AssignRole) (httpCode int, err error)
 }
 
 type userRepository struct {
@@ -117,11 +119,10 @@ func (r *userRepository) FindByPhonenumber(ctx context.Context, phonenumber stri
 	return user, nil
 }
 
-func (r *userRepository) UpdateRole(ctx context.Context, tx *gorm.DB, userID uuid.UUID, payload dto.UpdateUserRole) (int, error) {
+func (r *userRepository) UpdateTokenVersionByUserID(ctx context.Context, tx *gorm.DB, userID uuid.UUID) (int, error) {
 	if err := r.db.WithContext(ctx).
 		Raw(
-			qUpdateUserRole,
-			payload.RoleID,
+			qUpdateTokenByUserID,
 			userID,
 		).Error; err != nil {
 		return http.StatusBadRequest, err
@@ -130,13 +131,50 @@ func (r *userRepository) UpdateRole(ctx context.Context, tx *gorm.DB, userID uui
 	return http.StatusOK, nil
 }
 
-func (r *userRepository) UpdateTokenVersionByUserID(ctx context.Context, tx *gorm.DB, userID uuid.UUID) (int, error) {
-	if err := r.db.WithContext(ctx).
-		Raw(
-			qUpdateTokenByUserID,
-			userID,
-		).Error; err != nil {
+func (r *userRepository) constrictAssignRoleValues(userID uuid.UUID, data dto.AssignRole) []string {
+	values := []string{}
+
+	for _, roleID := range data.RoleIDs {
+		values = append(
+			values,
+			fmt.Sprintf("('%s','%s')", userID, roleID),
+		)
+	}
+
+	return values
+}
+
+func (r *userRepository) AssignRole(ctx context.Context, userID uuid.UUID, form dto.AssignRole) (httpCode int, err error) {
+	values := r.constrictAssignRoleValues(userID, form)
+
+	tx := r.db.WithContext(ctx).Begin()
+
+	defer func() {
+		if p := recover(); p != nil {
+			tx.Rollback()
+			panic(p)
+		}
+	}()
+
+	if tx.Error != nil {
+		return http.StatusInternalServerError, tx.Error
+	}
+
+	if err := tx.Exec(
+		qDeleteAssignRoles,
+		userID,
+	).Error; err != nil {
+		tx.Rollback()
 		return http.StatusBadRequest, err
+	}
+
+	if len(values) > 0 {
+		if err := tx.Exec(
+			qAssignRoles + strings.Join(values, ","),
+		).Error; err != nil {
+			tx.Rollback()
+			return http.StatusBadRequest, err
+		}
 	}
 
 	return http.StatusOK, nil

@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/http"
 	"project-root/modules/users/dto"
 	"project-root/modules/users/model"
 	"project-root/modules/users/repository"
@@ -31,7 +30,7 @@ type UserUsecase interface {
 	Delete(ctx context.Context, id uuid.UUID) (dto.UserDTO, error)
 	FindByID(ctx context.Context, id uuid.UUID) (dto.UserDTO, error)
 	FindByEmail(ctx context.Context, email string) (dto.UserDTO, error)
-	UpdateRole(ctx context.Context, userID uuid.UUID, payload dto.UpdateUserRole) (int, error)
+	AssignRole(ctx context.Context, userID uuid.UUID, form dto.AssignRole) (httpCode int, err error)
 }
 
 type userUsecase struct {
@@ -194,32 +193,8 @@ func (s *userUsecase) FindByEmail(ctx context.Context, email string) (dto.UserDT
 	}, nil
 }
 
-func (s *userUsecase) UpdateRole(ctx context.Context, userID uuid.UUID, payload dto.UpdateUserRole) (int, error) {
-	tx := s.db.Begin()
-	if tx.Error != nil {
-		return http.StatusBadRequest, tx.Error
-	}
+func (s *userUsecase) AssignRole(ctx context.Context, userID uuid.UUID, form dto.AssignRole) (httpCode int, err error) {
+	httpCode, err = s.AssignRole(ctx, userID, form)
 
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-			panic(r)
-		}
-	}()
-
-	code, err := s.userRepo.UpdateRole(ctx, tx, userID, payload)
-	if err != nil {
-		tx.Rollback()
-		return code, nil
-	}
-
-	code, err = s.userRepo.UpdateTokenVersionByUserID(ctx, tx, userID)
-	if err != nil {
-		tx.Rollback()
-		return code, nil
-	}
-
-	tx.Commit()
-
-	return code, nil
+	return httpCode, err
 }
