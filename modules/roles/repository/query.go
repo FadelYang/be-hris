@@ -28,8 +28,12 @@ const (
 		WHERE id = $1
 	`
 	qAssignMenusPermissions = `
-		INSERT INTO roles_menus_permissions
-		VALUES $1
+		INSERT INTO roles_menus_permissions (
+			role_id,
+			menu_id,
+			permission_id
+		)
+		VALUES
 	`
 	qDeleteAssignedMenusPermissions = `
 		DELETE from roles_menus_permissions
