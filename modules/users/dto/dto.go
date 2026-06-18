@@ -38,3 +38,7 @@ type UpdateUser struct {
 type UpdateUserRole struct {
 	RoleID uuid.UUID `json:"role_id"`
 }
+
+type AssignRole struct {
+	RoleIDs []uuid.UUID `json:"role_ids"`
+}

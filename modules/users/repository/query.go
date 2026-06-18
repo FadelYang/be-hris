@@ -12,4 +12,14 @@ const (
 		SET token_version = token_version + 1
 		WHERE user_id = $1
 	`
+
+	qDeleteRoles = `
+		DELETE FROM users_roles
+		WHERE user_id = $1
+	`
+
+	qAssignRoles = `
+		INSERT INTO users_roles (user_id, role_id)
+		VALUES
+	`
 )
